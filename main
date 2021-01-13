@@ -1,0 +1,620 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+
+void CustomerRegister();
+void AddCar();
+void User();
+void CustomerLogin();
+void CustomerOption();
+void AdminLogin();
+void AdminRegister();
+void AdminOption();
+void CustomerDelete();
+void CarDelete();
+void ViewSpecificCustomer();
+void ServiceBook();
+void ServiceDelete();
+void ServiceCost();
+
+#include "Customer.h"
+#include "CustomerAdd.h"
+#include "Car.h"
+#include "Service.h"
+#include "ServiceCost.h"
+
+int main()
+{
+	int choice=0;
+	cout << ":\n1: Customer\n2:Admin\n3:Exit" << endl;
+	cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+		User();
+		break;
+	
+	case 2:
+		AdminLogin();
+		break;
+	case 3:
+		exit(0);
+	}
+}
+
+void User()
+{
+	int choice = 0;
+	cout << "Choose:\n 1: Register\n 2:Login\n3:Exit" << endl;
+	cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+		CustomerRegister();
+		break;
+
+	case 2:
+		CustomerLogin();
+		break;
+	case 3:
+		exit(0);
+		break;
+	}
+}
+
+void AdminOption()
+{
+	int choice = 0;
+	cout << "Here are your options:\n1: Delete a customer?\n2: View the customers\n3:View a Car";
+	cin >> choice;
+	switch (choice)
+	{
+	case 1:
+		CustomerDelete();
+		break;
+	case 2:
+		ViewSpecificCustomer();
+	case 3:
+		exit(0);
+	}
+}
+
+void CustomerOption()
+{
+	int choice = 0;
+	cout << "What do you want to do?\n1: Add a new Car\n2: Delete an existing car\n3: Choose a service\n4: Delete a service\n5: exit" << endl;
+	cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+		AddCar();
+		break;
+	case 2:
+		CarDelete();
+	case 3:
+		ServiceBook();
+	case 4:
+		ServiceDelete();
+	case 5:
+		ServiceCost();
+	}
+}
+
+void CustomerLogin()
+{
+		Customer* customer = new Customer();
+		CustomerAdd login;
+		string pass, search, column = "username";
+		char back = '0';
+
+		system("cls");
+		cout << "[Log In]\n\n";
+
+		cout << "Username: ";
+		cin >> search;
+
+		cout << "Password: \n";
+		cin >> pass;
+
+		bool stat = login.UserLogin(search, column);
+
+		if (stat == false) {
+			cout << "\n\n[Username is incorrect or doesn't exist]\n\nPress 1 to relogin\nPress 2 to go back\n";
+			cin >> back;
+			if (back == '1')
+				CustomerLogin();
+			if (back == '2')
+				main();
+		}
+		column = "password";
+		stat = login.UserLogin(pass, column);
+
+		if (stat == false)
+		{
+			cout << "\n\n[Password is incorrect]\n\nPress 1 to relogin\nPress 2 to go back\n";
+			cin >> back;
+			if (back == '1')
+				CustomerLogin();
+			if (back == '2')
+				main();
+		}
+		if (stat == true) 
+		{
+			CustomerOption();
+		}
+		
+}
+void AdminLogin()
+{
+
+	Admin* admin = new Admin();
+	CustomerAdd login;
+	string pass, search, column = "username";
+	char choice = '0';
+
+	system("cls");
+	cout << "[Log In]\n\n";
+
+	cout << "Username: ";
+	cin >> search;
+
+	cout << "Password: \n";
+	cin >> pass;
+
+	bool stat = login.AdminLogin(search, column);
+
+	if (stat == false) {
+		cout << "\n\n[Username is incorrect or doesn't exist]\n\nPress 1 to relogin\nPress 2 to go back\n";
+		cin >> choice;
+		if (choice == '1')
+			AdminLogin();
+		if (choice == '2')
+			main();
+	}
+	column = "password";
+	stat = login.AdminLogin(pass, column);
+
+	if (stat == false) {
+		cout << "\n\n[Password is incorrect]\n\nPress 1 to relogin\nPress 2 to go back\n";
+		cin >> choice;
+		if (choice == '1')
+			AdminLogin();
+		if (choice == '2')
+			main();
+	}
+	if (stat == true)
+	{
+		AdminOption();
+	}
+
+}
+
+void CustomerDelete()
+{
+	Customer* customer = new Customer();
+	cout << "Delete:\n\n";
+	cout << "Customer name: ";
+
+	getline(cin, customer->username);
+	getline(cin, customer->username);
+
+
+
+	CustomerAdd customerdel;
+	int status = customerdel.deleteCustomer(customer);
+
+	if (status != 0) {
+		system("cls");
+		cout << "[Successfully deleted a customer]\n\nPress enter to continue" << endl;
+		AdminOption();
+	}
+	else {
+		system("cls");
+		cout << "[Unable to delete a customer]\n\nPress enter to continue" << endl;
+		AdminOption();
+	}
+}
+
+void CarDelete()
+{
+;	Car* car = new Car();
+	CustomerAdd check;
+	string search, column = "username";
+	int choice;
+
+	cout << "Please enter the owner of the car" << endl;
+
+	cout << "Username: " << endl;
+	cin >> search;
+
+
+	bool stat = check.CheckCar(search, column);
+
+	if (stat == true) {
+
+
+
+		cout << "Delete:\n\n";
+		cout << "Plate Number of the car: ";
+
+		getline(cin, car->platenumber);
+		getline(cin, car->platenumber);
+
+
+
+		CustomerAdd cardel;
+		int status = cardel.deleteCar(car);
+
+		if (status != 0) {
+			system("cls");
+			cout << "[Successfully removed a car]\n\nPress enter to continue" << endl;
+			CustomerOption();
+		}
+		else {
+			system("cls");
+			cout << "[Unable to removed a car]\n\nPress enter to continue" << endl;
+			CustomerOption();
+		}
+	}
+	if (stat == false)
+	{
+		cout << "The username is incorrect, press 1 to retry or 2 exit to menu" << endl;
+		cin >> choice;
+		if (choice == 1)
+		{
+			CarDelete();
+		}
+		if (choice == 2)
+		{
+			CustomerOption();
+		}
+	}
+}
+
+void CustomerRegister()
+{
+	Customer* customer = new Customer();
+	CustomerAdd login;
+	string pass, search, column = "username";
+	int choice;
+
+	cout << "Please enter your details" << endl;
+
+	cout << "username: " << endl;
+	cin >> search;
+	
+
+	bool stat = login.UserLogin(search, column);
+
+	if (stat == true) {
+		cout << "\n\n[Username is already taken ]\n\nPress 1 to enter new username\nPress 2 to go back\n";
+		cin >> choice;
+
+		if (choice == '1') 
+			CustomerRegister();
+		else 
+			main();
+	}
+	
+	if (stat == false) 
+	{
+		customer->username = search;
+
+		cout << " " << endl;
+		getline(cin, customer->icnumber);
+
+		cout << "icnumber " << endl;
+		getline(cin, customer->icnumber);
+
+		cout << "phonenumber: " << endl;
+		getline(cin, customer->phonenumber);
+
+		cout << "adddress: " << endl;
+		getline(cin, customer->address);
+
+		cout << "password: " << endl;
+		getline(cin, customer->password);
+
+
+		CustomerAdd customerAdd;
+		int status = customerAdd.insertCustomer(customer);
+
+		if (status != 0)
+			cout << "Successfully added a new customer" << endl;
+		else
+			cout << "Unable to add a new customer" << endl;
+		if (status != 0)
+			main();
+	}
+}
+
+void AdminRegister()
+{
+	Admin* admin = new Admin();
+
+	cout << "Please enter your details" << endl;
+
+	cout << "username: " << endl;
+	getline(cin, admin->username);
+
+	cout << "username: " << endl;
+	getline(cin, admin->username);
+
+	cout << "password " << endl;
+	getline(cin, admin->password);
+
+
+	CustomerAdd AdminAdd;
+	int status = AdminAdd.insertAdmin(admin);
+
+	if (status != 0)
+		cout << "Successfully added a new admin" << endl;
+	else
+		cout << "Unable to add a new admin" << endl;
+
+}
+
+void AddCar()
+{
+	Car* car = new Car();
+	CustomerAdd check;
+	string search, column = "platenumber";
+	int choice;
+
+	cout << "Please enter your details accordingly" << endl;
+
+	cout << "Your Car Plate Number " << endl;
+	cin >> search;
+
+
+	bool stat = check.CheckCar(search, column);
+
+	if (stat == true) {
+		cout << "\n\n[This Car is already registered, Pls press 1 to go back\n";
+		cin >> choice;
+
+		if (choice == '1')
+			CustomerOption();
+		else
+			CustomerOption();
+	}
+
+	if (stat == false) {
+		car->platenumber = search;
+
+		cout << "The Name of your car: " << endl;
+		getline(cin, car->carname);
+		getline(cin, car->carname);
+
+		cout << "The colour of your car: " << endl;
+		getline(cin, car->carcolour);
+
+		Customer* customer = new Customer();
+		CustomerAdd login;
+		string find, column = "username";
+
+		cout << "Please enter your username to confirm ownership of this car" << endl;
+		cin >> find;
+
+		bool stat = login.UserLogin(find, column);
+		if (stat == true)
+		{
+			car->username = find;
+		}
+		if (stat == false)
+		{
+			cout << "The username you have entered is wrong or the owner of the car is not yet registered, Please go back and register first if so" << endl;
+			cout << "Press 1 to Retry or 2 to register or 3 to go back to menu" << endl;
+			cin >> choice;
+			if (choice == 1)
+			{
+				AddCar();
+			}
+			if (choice == 2)
+			{
+
+				main();
+			}
+			if (choice == 3)
+			{
+				CustomerOption();
+			}
+
+		}
+	}
+	
+		CustomerAdd carAdd;
+		int status = carAdd.insertCar(car);
+
+		if (status != 0) {
+			cout << "Successfully added a new car" << endl;
+			CustomerOption();
+		}
+		else {
+			cout << "Unable to add a new car" << endl;
+			CustomerOption();
+		}
+	
+}
+
+void ViewSpecificCustomer()
+{
+
+	CustomerAdd customerAdd;
+	string username;
+
+	cout << "Please enter the customer you want to search:" << endl
+		<< "Username:\t";
+	getline(cin, username);
+	getline(cin, username);
+
+	Customer* customer = customerAdd.selectCustomer(username);
+
+	cout << "The details of the searched customer is\n " << "Username" << setw(20) << "IC Number" << setw(20) << "Phone Number" << setw(20) << "Address" << endl;
+	cout<< customer->username << setw(20) << customer->icnumber << setw(20) << customer->phonenumber << setw(20) << customer->address << endl;
+	AdminOption();
+}
+
+
+void ViewAllCustomer()
+{
+	CustomerAdd customerAdd;
+	string username;
+
+	cout << "Please enter the customer you want to search:" << endl
+		<< "Username:\t";
+	getline(cin, username);
+	getline(cin, username);
+
+	Customer* customer = customerAdd.selectCustomer(username);
+
+	cout << "The details of the searched customer is\n " << "Username" << setw(20) << "IC Number" << setw(20) << "Phone Number" << setw(20) << "Address" << endl;
+	cout << customer->username << setw(20) << customer->icnumber << setw(20) << customer->phonenumber << setw(20) << customer->address << endl;
+	AdminOption();
+}
+
+/*void ViewCar()
+{
+
+	CustomerAdd customeradd;
+	string platenumber;
+
+	cout << "Please enter the customer you want to search:" << endl
+		<< "Username:\t";
+	getline(cin, platenumber);
+	getline(cin, platenumber);
+
+	Car* car = customeradd.selectCustomer(platenumber);
+
+	cout << "The name of the searched program is " << car->platenumber << car->carname << car->carcolour << endl;
+
+}*/
+
+void ServiceBook()
+{
+	Service* service = new Service();
+	Car* car = new Car();
+	CustomerAdd check;
+	string pass, search, column = "platenumber";
+	int choice;
+
+	cout << "Please enter your details accordingly" << endl;
+
+	cout << "Your Car Plate Number " << endl;
+	cin >> search;
+
+
+	bool stat = check.CheckCar(search, column);
+
+	if (stat == true) 
+	{
+
+		cout << "Please enter your service details accordingly" << endl;
+
+		cout << "The type of your service: " << endl;
+		getline(cin, service->servicetype);
+		int choice = 0;
+		cout << "Select 1 or 2\n1 for major service or 2 for minor service " << endl;
+		cin >> choice;
+
+		if (choice == 1)
+		{
+			service->servicetype = "major";
+		}
+		else
+		{
+			service->servicetype = "minor";
+		}
+
+		service->platenumber = search;
+
+		CustomerAdd serviceAdd;
+		int status = serviceAdd.insertService(service);
+
+		if (status != 0) {
+			cout << "Successfully added a new service" << endl;
+			CustomerOption();
+		}
+		else {
+			cout << "Unable to add a new service" << endl;
+			CustomerOption();
+		}
+	}
+
+	if (stat == false) {
+		cout << "Car doesnt exist, Please go back and register your car first before booking a service" << endl;
+		CustomerOption();
+	}
+	
+}
+
+void ServiceDelete()
+{
+	Service* service = new Service();
+	cout << "Delete:\n\n";
+	cout << "Service id: ";
+
+	getline(cin, service->serviceid);
+	getline(cin, service->serviceid);
+
+
+
+	CustomerAdd servicedel;
+	int status = servicedel.deleteService(service);
+
+	if (status != 0) {
+		system("cls");
+		cout << "[Successfully deleted a service]\n\nPress enter to continue" << endl;
+		CustomerOption();
+	}
+	else {
+		system("cls");
+		cout << "[Unable to delete a service]\n\nPress enter to continue" << endl;
+		CustomerOption();
+	}
+}
+
+void ServiceCost()
+{
+	Service* service = new Service();
+	CustomerAdd cost;
+	string search,search1, row, column="serviceid";
+	int choice,calc=0,addcalc,total;
+
+	cout << "id"<<endl;
+		cin >> search;
+	bool stat = cost.ServiceChoice(search, column);
+
+	if (stat == true) {
+		search1 = "major";
+		row = search;
+		bool stat = cost.ServiceChoice(search1, row);
+
+		if (stat == true)
+		{
+			cout<<"hi" << endl;
+			calc = 600;
+		}
+		if (stat == false)
+		{
+			calc = 200;
+		}
+
+		cout << "Enter any additional service cost made" << endl;
+		cin >> addcalc;
+
+		total = calc + addcalc;
+
+		getline(cin, service->servicecost = total);
+	}
+	if (stat == false)
+	{
+		cout << "wrong service Id" << endl;
+		CustomerOption();
+	}
+}
